@@ -90,13 +90,14 @@
     </div>
     <h1 style="background: #f7f5f5; font-weight: bold; padding: 15px; border-left:8px solid #ff0080; border-top-left-radius:8px; border-bottom-left-radius:8px;">Regresion Lineal: Calcular salario mensual dependiendo en años de estudio.</h1>
     
-    <form method="post" action="/predict">
-        <label for="salario" style="text-align: center; display: block; font-weight: bold; margin-bottom: 10px; font-family: 'Comic Sans MS'">Años de estudio</label>
-        <input type="number" name="salario" required>
-        <input type="submit" value="Predecir" style="background-color: #ff0080; color: #ffffff; border: none; border-radius: 5px;">
+    <form method="post">
+        <label for = "salario" style="text-align: center; display: block; font-weight: bold; margin-bottom: 10px; font-family: 'Comic Sans MS'">Años de estudio</label>
+        <input type = "number" Name = "salario" required>
+        <input type = "submit" value = "Predecir" style="background-color: #ff0080; color: #ffffff; border: none; border-radius: 5px;">
     </form>
-    {% if result is not none %}
-        <h2 style="background: #000000;color: #f7f5f5; font-weight: bold; padding: 10px; border-left:5px solid #ff0080; border-top-right-radius:8px; border-bottom-right-radius:8px;"> Salario Mensual Estimado: {{ result }}</h2>
+
+    {% if result is not none%}
+        <h2 style="background: #000000;color: #f7f5f5; font-weight: bold; padding: 10px; border-left:5px solid #ff0080; border-top-right-radius:8px; border-bottom-right-radius:8px;"> Salario Mensual Estimado:{{result}}</h2>
     {% endif %}
 
     <h2 style="background: #000000; color:#f7f5f5; font-weight: bold; padding: 10px; border-left:5px solid #ff0080; border-top-right-radius:8px; border-bottom-right-radius:8px;"> Gráfico de Regresión Lineal</h2>
