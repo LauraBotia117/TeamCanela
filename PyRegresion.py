@@ -60,7 +60,6 @@ data = {
 }   
 
 df = pd.DataFrame(data)
-df = pd.DataFrame(data)
 
 x = df[["Años Educacion"]]
 y = df[["Salario Mensual (USD)"]]
@@ -79,7 +78,7 @@ def generate_plot():
     plt.plot(df["Años Educacion"], model.predict(x), color="green", linewidth=2, label="Regresión lineal")
     plt.xlabel("Años Educacion")
     plt.ylabel("Salario Mensual (USD)")
-    plt.title("Regresión Lineal: Años de Estudicación vs Salario Mensual (USD)")
+    plt.title("Regresión Lineal: Años de Estudio vs Salario Mensual (USD)")
     plt.legend()
 
     # Guardar la imagen en memoria
