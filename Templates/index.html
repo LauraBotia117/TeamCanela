@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='EstiloIndex.css') }}">
+
+    <title>Menú de Inicio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido, hello Flask!</h1>
+    <div class="button-container">
+        <button onclick="location.href='/examplehtml/'">Ejemplo HTML</button>
+        <button onclick="location.href='/linearegresion/'">Calcular Calificación / Regresion Lineal Ejemplo</button>
+        <button onclick="location.href='/Casodeuso/'">Casos de Uso / Semana 3</button>
+        <button onclick="location.href='/SalarioMensual/'">Salario Mensual / Regresion Lineal Semana 4</button>
+        <button onclick="location.href='/RegresionLogistica/'">Mapa Mental Regresión Logística / Semana 5</button>
+    </div>
+</body>
+</html>
