@@ -8,11 +8,22 @@
         body {
             text-align: center;
         }
-        .matriz-container {
+        .matriz-container, .metricas-container {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
         }
     </style>
 </head>
@@ -33,7 +44,29 @@
             <p>No se pudo generar la matriz de confusión.</p>
         {% endif %}
     </div>
-
+    
+    <div class="metricas-container">
+        <h2>Métricas del Modelo</h2>
+        <table>
+            <tr>
+                <th>Métrica</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Accuracy</td>
+                <td>{{ accuracy }}</td>
+            </tr>
+            <tr>
+                <td>Precision</td>
+                <td>{{ precision }}</td>
+            </tr>
+            <tr>
+                <td>Recall</td>
+                <td>{{ recall }}</td>
+            </tr>
+        </table>
+    </div>
+    
     <br>
     <button onclick="location.href='/Telecomunicaciones/'">Volver al Menú</button>
 </body>

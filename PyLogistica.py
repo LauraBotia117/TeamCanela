@@ -17,7 +17,7 @@ def generar_dataset():
     historial_pago = np.random.rand(100)  # Valores entre 0 y 1
     
     # Generación de variable objetivo (cancelación de servicio)
-    cancelacion = np.where((duracion_llamada < 30) & (plan_contratado == 0) & (historial_pago < 0.5), 1, 0)
+    cancelacion = np.where((duracion_llamada < 30) & (plan_contratado == 0) & (historial_pago < 0.1), 1, 0)
     
     # Creación del DataFrame
     dataset = pd.DataFrame({
@@ -91,3 +91,14 @@ def obtener_matriz_confusion():
 def obtener_dataset_html():
     dataset = generar_dataset()
     return dataset.to_html(classes='table table-bordered', index=False)
+
+# Función para calcular métricas de evaluación
+def obtener_metricas():
+    modelo, X_test, y_test = entrenar_modelo()
+    y_pred = modelo.predict(X_test)
+    
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    
+    return accuracy, precision, recall
