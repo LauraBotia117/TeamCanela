@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predecir Cancelación</title>
+</head>
+<body>
+    <h1>Calculadora de Cancelación de Servicio</h1>
+
+    <p>Esta herramienta utiliza un modelo de <strong>Regresión Logística</strong> para predecir si un cliente probablemente cancelará su servicio de telecomunicaciones. 
+       La predicción se basa en los siguientes factores:</p>
+
+    <ul>
+        <li><strong>Duración de la Llamada:</strong> Tiempo en minutos que duró la última llamada del cliente con la empresa. Puede variar entre 1 y 60 minutos.</li>
+        <li><strong>Plan Contratado:</strong> Indica si el cliente tiene un plan de telecomunicaciones activo. 
+            <ul>
+                <li>0 = No tiene un plan contratado</li>
+                <li>1 = Tiene un plan contratado</li>
+            </ul>
+        </li>
+        <li><strong>Historial de Pago:</strong> Representa el comportamiento de pago del cliente. Es un valor entre 0.0 y 1.0, donde:
+            <ul>
+                <li>Cerca de 0 indica que el cliente ha tenido pagos atrasados o problemas de pago.</li>
+                <li>Cerca de 1 indica que el cliente paga puntualmente y sin retrasos.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <form method="post">
+        <label for="duracion_llamada">Duración de la Llamada (1-60 min):</label>
+        <input type="number" id="duracion_llamada" name="duracion_llamada" min="1" max="60" required>
+
+        <label for="plan_contratado">Plan Contratado:</label>
+        <select id="plan_contratado" name="plan_contratado">
+            <option value="0">No tiene plan contratado</option>
+            <option value="1">Tiene plan contratado</option>
+        </select>
+
+        <label for="historial_pago">Historial de Pago (0.0 - 1.0):</label>
+        <input type="number" id="historial_pago" name="historial_pago" step="0.01" min="0" max="1" required>
+
+        <button type="submit">Predecir</button>
+    </form>
+
+    {% if resultado is not none %}
+        <h2>Resultado de la Predicción: {% if resultado == "Sí" %}El cliente probablemente <strong>cancelará</strong> su servicio.{% else %}El cliente probablemente <strong>no cancelará</strong> su servicio.{% endif %}</h2>
+    {% endif %}
+
+    <br>
+    <button onclick="location.href='/Telecomunicaciones/'">Volver al Menú</button>
+</body>
+</html>

@@ -72,3 +72,17 @@ def dataset():
     from PyLogistica import obtener_dataset_html
     dataset_html = obtener_dataset_html()
     return render_template("DatasetLogistica.html", dataset_html=dataset_html)
+
+@app.route("/Telecomunicaciones/Predecir", methods=["GET", "POST"])
+def predecir():
+    resultado = None
+
+    if request.method == "POST":
+        duracion_llamada = float(request.form["duracion_llamada"])
+        plan_contratado = int(request.form["plan_contratado"])
+        historial_pago = float(request.form["historial_pago"])
+        
+        # Usamos el modelo de regresión logística para predecir
+        resultado = PyLogistica.predecir_cancelacion(duracion_llamada, plan_contratado, historial_pago)
+
+    return render_template("PredecirLogistica.html", resultado=resultado)

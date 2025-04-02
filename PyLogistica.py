@@ -7,6 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
 
+# Función para generar dataset
 def generar_dataset():
     np.random.seed(42)  # Fijar semilla para reproducibilidad
     
@@ -16,7 +17,7 @@ def generar_dataset():
     historial_pago = np.random.rand(100)  # Valores entre 0 y 1
     
     # Generación de variable objetivo (cancelación de servicio)
-    cancelacion = np.where((duracion_llamada < 20) & (plan_contratado == 0) & (historial_pago < 0.5), "Sí", "No")
+    cancelacion = np.where((duracion_llamada < 30) & (plan_contratado == 0) & (historial_pago < 0.5), 1, 0)
     
     # Creación del DataFrame
     dataset = pd.DataFrame({
@@ -28,6 +29,26 @@ def generar_dataset():
     
     return dataset
 
-def obtener_dataset_html():
+# Entrenar el modelo de regresión logística
+def entrenar_modelo():
     dataset = generar_dataset()
-    return dataset.to_html(classes='table table-bordered', index=False)
+    
+    X = dataset[["Duracion_Llamada", "Plan_Contratado", "Historial_Pago"]]  # Variables independientes
+    y = dataset["Cancelacion"]  # Variable objetivo
+    
+    # Dividir en conjunto de entrenamiento y prueba
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Crear y entrenar el modelo
+    modelo = LogisticRegression()
+    modelo.fit(X_train, y_train)
+    
+    return modelo
+
+# Función para predecir si un cliente cancelará su servicio
+def predecir_cancelacion(duracion_llamada, plan_contratado, historial_pago):
+    modelo = entrenar_modelo()
+    datos_entrada = np.array([[duracion_llamada, plan_contratado, historial_pago]])
+    prediccion = modelo.predict(datos_entrada)[0]
+    
+    return "Sí" if prediccion == 1 else "No"
