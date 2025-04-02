@@ -40,19 +40,65 @@ def entrenar_modelo():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # Crear y entrenar el modelo
-    modelo = LogisticRegression()
+    modelo = LogisticRegression(class_weight='balanced')
     modelo.fit(X_train, y_train)
     
-    return modelo
+    
+    return modelo, X_test, y_test
 
 # Función para predecir si un cliente cancelará su servicio
 def predecir_cancelacion(duracion_llamada, plan_contratado, historial_pago):
-    modelo = entrenar_modelo()
+    modelo, _, _ = entrenar_modelo()
     datos_entrada = np.array([[duracion_llamada, plan_contratado, historial_pago]])
     prediccion = modelo.predict(datos_entrada)[0]
     
     return "Sí" if prediccion == 1 else "No"
 
+# Función para obtener la matriz de confusión
+def obtener_matriz_confusion():
+    modelo, X_test, y_test = entrenar_modelo()
+    y_pred = modelo.predict(X_test)
+    
+    matriz = confusion_matrix(y_test, y_pred)
+    
+    # Graficar la matriz de confusión
+    plt.figure(figsize=(5, 5))
+    plt.imshow(matriz, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title("Matriz de Confusión")
+    plt.colorbar()
+    
+    clases = ["No Canceló", "Canceló"]
+    plt.xticks([0, 1], clases)
+    plt.yticks([0, 1], clases)
+    
+    for i in range(2):
+        for j in range(2):
+            plt.text(j, i, str(matriz[i, j]), ha="center", va="center", color="black")
+    
+    plt.xlabel("Predicción")
+    plt.ylabel("Valor Real")
+    
+    # Guardar la imagen en base64
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    matriz_base64 = base64.b64encode(img.getvalue()).decode()
+
+    plt.close()
+    
+    return matriz_base64
+
 def obtener_dataset_html():
     dataset = generar_dataset()
     return dataset.to_html(classes='table table-bordered', index=False)
+
+# Función para calcular métricas de evaluación
+def obtener_metricas():
+    modelo, X_test, y_test = entrenar_modelo()
+    y_pred = modelo.predict(X_test)
+    
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    
+    return accuracy, precision, recall

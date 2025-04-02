@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 import LineaRegresiones
 import PyRegresion
 import PyLogistica
+from PyLogistica import obtener_matriz_confusion, obtener_metricas
+
 
 app = Flask(__name__)
 
@@ -86,3 +88,9 @@ def predecir():
         resultado = PyLogistica.predecir_cancelacion(duracion_llamada, plan_contratado, historial_pago)
 
     return render_template("PredecirLogistica.html", resultado=resultado)
+
+@app.route('/Telecomunicaciones/Resultados')
+def mostrar_resultados():
+    matriz_confusion = obtener_matriz_confusion()
+    accuracy, precision, recall = obtener_metricas()
+    return render_template('ResultadosLogistica.html', matriz_confusion=matriz_confusion, accuracy=accuracy, precision=precision, recall=recall)
