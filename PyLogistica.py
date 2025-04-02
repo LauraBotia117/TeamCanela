@@ -17,7 +17,7 @@ def generar_dataset():
     historial_pago = np.random.rand(100)  # Valores entre 0 y 1
     
     # Generación de variable objetivo (cancelación de servicio)
-    cancelacion = np.where((duracion_llamada < 30) & (plan_contratado == 0) & (historial_pago < 0.1), 1, 0)
+    cancelacion = np.where((duracion_llamada < 30) & (plan_contratado == 0) & (historial_pago < 0.5), 1, 0)
     
     # Creación del DataFrame
     dataset = pd.DataFrame({
@@ -40,7 +40,7 @@ def entrenar_modelo():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # Crear y entrenar el modelo
-    modelo = LogisticRegression()
+    modelo = LogisticRegression(class_weight='balanced')
     modelo.fit(X_train, y_train)
     
     
