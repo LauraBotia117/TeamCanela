@@ -52,3 +52,7 @@ def predecir_cancelacion(duracion_llamada, plan_contratado, historial_pago):
     prediccion = modelo.predict(datos_entrada)[0]
     
     return "Sí" if prediccion == 1 else "No"
+
+def obtener_dataset_html():
+    dataset = generar_dataset()
+    return dataset.to_html(classes='table table-bordered', index=False)
