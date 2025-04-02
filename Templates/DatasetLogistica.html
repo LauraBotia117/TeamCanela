@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='EstiloIndex.css') }}">
+    <title>Dataset - Regresión Logística</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dataset Telecomunicaciones - Regresión Logística</h1>
+    <div class="container">
+        <h2>Objetivo</h2>
+        <p>Este dataset busca predecir si un cliente cancelará un servicio de telecomunicaciones basándose en tres variables: duración de la llamada, plan contratado y historial de pago.</p>
+
+        <h2>Descripción</h2>
+        <p>Se han generado 100 registros con datos simulados de clientes. La variable objetivo es la cancelación del servicio ("Sí" o "No").</p>
+
+        <h2>Explicación de las Variables</h2>
+        <ul>
+            <li><strong>Duración de la Llamada:</strong> Tiempo en minutos que el cliente habló con el servicio. Varía entre 1 y 60 minutos.</li>
+            <li><strong>Plan Contratado:</strong> Indica si el cliente tiene un plan de suscripción (1 = Sí, 0 = No).</li>
+            <li><strong>Historial de Pago:</strong> Representa qué tan puntual es el cliente con los pagos. Valores entre 0 y 1, donde 0 es un historial deficiente y 1 es un historial excelente.</li>
+            <li><strong>Cancelación:</strong> Variable objetivo que indica si el cliente canceló el servicio ("Sí") o no ("No").</li>
+        </ul>
+
+        <h2>Datos</h2>
+        {{ dataset_html|safe }}
+        
+        <br>
+        <button onclick="location.href='/Telecomunicaciones/'">Volver al Menú</button>
+    </div>
+</body>
+</html>

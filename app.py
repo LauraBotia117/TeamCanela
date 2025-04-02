@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import LineaRegresiones
 import PyRegresion
+import PyLogistica
 
 app = Flask(__name__)
 
@@ -60,3 +61,14 @@ def calcularsalarios():
 
     return render_template("HtRegresion.html", result=predictResult, plot_url=grafico)
 
+
+#SEMANA 6
+@app.route("/Telecomunicaciones/")
+def menu():
+    return render_template("MenuNavegacionLogistica.html")
+
+@app.route("/Telecomunicaciones/Dataset")
+def dataset():
+    from PyLogistica import obtener_dataset_html
+    dataset_html = obtener_dataset_html()
+    return render_template("DatasetLogistica.html", dataset_html=dataset_html)
