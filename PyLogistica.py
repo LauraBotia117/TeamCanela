@@ -34,7 +34,7 @@ def entrenar_modelo():
     dataset = generar_dataset()
     
     X = dataset[["Duracion_Llamada", "Plan_Contratado", "Historial_Pago"]]  # Variables independientes
-    y = dataset["Cancelacion"]  # Variable objetivo
+    y = dataset["Cancelacion"]  # Variable objetivo/categorica
     
     # Dividir en conjunto de entrenamiento y prueba
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
