@@ -5,7 +5,7 @@ import PyLogistica
 from PyLogistica import obtener_matriz_confusion, obtener_metricas
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Home 
 @app.route("/")
