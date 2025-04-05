@@ -9,8 +9,8 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Home 
 @app.route("/")
-def home():
-    return render_template("inicioflask.html")
+def main():
+    return render_template('inicioflask.html')
 
 # Ruta Actividad 3 Casos de uso
 @app.route("/Casodeuso/")
