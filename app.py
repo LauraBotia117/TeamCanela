@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Home 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("inicioflask.html")
 
 # Ruta Actividad 3 Casos de uso
 @app.route("/Casodeuso/")
