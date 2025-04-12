@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request
+import sqlite3
 import LineaRegresiones
 import PyRegresion
 import PyLogistica
+from poblar_db import obtener_modelo_por_id, obtener_modelos, obtener_modelos_detalle
 from PyLogistica import obtener_matriz_confusion, obtener_metricas
 
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+app = Flask(__name__, template_folder='Templates')
 
 # Home 
 @app.route("/")
-def main():
-    return render_template('inicioflask.html')
+def home():
+    return render_template("inicioflask.html")
 
 # Ruta Actividad 3 Casos de uso
 @app.route("/Casodeuso/")
@@ -94,3 +96,15 @@ def mostrar_resultados():
     matriz_confusion = obtener_matriz_confusion()
     accuracy, precision, recall = obtener_metricas()
     return render_template('ResultadosLogistica.html', matriz_confusion=matriz_confusion, accuracy=accuracy, precision=precision, recall=recall)
+
+@app.route("/modelo/")
+def index():
+    modelos = obtener_modelos()
+    modelos_detalle = obtener_modelos_detalle()
+    return render_template("index.html", modelos=modelos, modelos_detalle=modelos_detalle)
+
+@app.route("/modelo/<int:modelo_id>")
+def modelo(modelo_id):
+    modelos = obtener_modelos()  
+    modelo = obtener_modelo_por_id(modelo_id)
+    return render_template("modelo.html", modelo=modelo, modelos=modelos)
