@@ -18,7 +18,8 @@
 
     <nav>
         <ul>
-            <li><a href="{{ url_for('index') }}">Inicio</a></li>
+            
+            <li><a  class="return-btn" onclick="location.href='/'">Inicio</a></li>
             <li class="dropdown">
                 <a href="#">Modelos</a>
                 <ul class="dropdown-content">
@@ -27,8 +28,6 @@
                     {% endfor %}
                 </ul>
             </li>
-            <li><a href="#">Ejemplos</a></li>
-            <li><a href="#">Casos de Uso</a></li>
         </ul>
     </nav>
 

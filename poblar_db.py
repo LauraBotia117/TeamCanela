@@ -48,13 +48,13 @@ modelos = [
         "Gradient Boosting (XGBoost, AdaBoost, etc.)",
         "El Boosting entrena secuencialmente modelos simples (como árboles pequeños), donde cada nuevo modelo corrige los errores del anterior enfocándose más en los datos mal clasificados. Estos 'aprendices débiles' se combinan al final para formar un predictor fuerte y preciso. AdaBoost ajusta pesos, Gradient Boosting trabaja con residuos, y XGBoost optimiza el proceso para mayor velocidad y escalabilidad.",
         "https://www.ibm.com/es-es/topics/boosting",
-        "https://www.ibm.com/content/dam/connectedassets-adobe-cms/worldwide-content/creative-assets/s-migr/ul/g/8f/27/3-1_svm_optimal-hyperplane_max-margin_support-vectors-2-1.png"
+        "https://almablog-media.s3.ap-south-1.amazonaws.com/image_28_7cf514b000.png"
     ),
     (
         "Naive Bayes",
         "Naive Bayes es un clasificador probabilístico basado en el teorema de Bayes que asume independencia entre características (aunque rara vez sea cierto), lo que lo hace simple y eficiente. Incluye variantes como Gaussian, Multinomial y Bernoulli. A pesar de su simplicidad, ofrece buen rendimiento incluso con pocos datos o alta dimensionalidad, siendo útil en análisis de sentimientos o diagnóstico médico.",
         "https://www.ibm.com/es-es/think/topics/naive-bayes",
-        "https://www.researchgate.net/publication/382952235/figure/fig7/AS:11431281270663349@1723134796546/Naive-Bayes-Classifier.jpg"
+        "https://nicolovaligi.com/articles/naive-bayes-tensorflow/tf_iris.png"
     )
 
 ]
@@ -68,3 +68,29 @@ conn.commit()
 conn.close()
 
 print("Base de datos creada y datos insertados correctamente.")
+
+DB_PATH = "data/modelos.db"
+
+def obtener_modelos():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, nombre_modelo FROM modelos_clasificacion")
+    modelos = cursor.fetchall()
+    conn.close()
+    return modelos
+
+def obtener_modelos_detalle():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT nombre_modelo, descripcion, fuente_informacion, contenido_grafico FROM modelos_clasificacion")
+    modelos = cursor.fetchall()
+    conn.close()
+    return modelos
+
+def obtener_modelo_por_id(modelo_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM modelos_clasificacion WHERE id = ?", (modelo_id,))
+    modelo = cursor.fetchone()
+    conn.close()
+    return modelo
