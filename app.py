@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import sqlite3
 import LineaRegresiones
 import PyRegresion
 import PyLogistica
+from Pyncc import predecir_cliente, guardar_datos_prediccion, obtener_dataset_pickle, descargar_csv_pickle, descargar_excel_pickle, obtener_dataset_picklen, descargar_csv_picklen, descargar_excel_picklen, obtener_metricass, obtener_matriz_confusion_base64
 from poblar_db import obtener_modelo_por_id, obtener_modelos, obtener_modelos_detalle
 from PyLogistica import obtener_matriz_confusion, obtener_metricas
 
@@ -97,6 +98,7 @@ def mostrar_resultados():
     accuracy, precision, recall = obtener_metricas()
     return render_template('ResultadosLogistica.html', matriz_confusion=matriz_confusion, accuracy=accuracy, precision=precision, recall=recall)
 
+#SEMANA 7
 @app.route("/modelo/")
 def index():
     modelos = obtener_modelos()
@@ -108,3 +110,88 @@ def modelo(modelo_id):
     modelos = obtener_modelos()  
     modelo = obtener_modelo_por_id(modelo_id)
     return render_template("modelo.html", modelo=modelo, modelos=modelos)
+
+#SEMANA 8
+@app.route("/Supermercado/")
+def menusup():
+    return render_template("MenuNavegacionNcc.html")
+
+@app.route("/Supermercado/Predecir", methods=["GET", "POST"])
+def supermerpredecir():
+    prediccion = None
+    if request.method == "POST":
+        frecuencia_visita = float(request.form["frecuencia_visita"])
+        monto_gasto = float(request.form["monto_gasto"])
+        categoria_compra = request.form["categoria_compra"]
+        
+        # Llamar a la función para obtener la predicción
+        prediccion = predecir_cliente(frecuencia_visita, monto_gasto, categoria_compra)
+
+        guardar_datos_prediccion(frecuencia_visita, monto_gasto, categoria_compra, prediccion)
+    
+    return render_template("PredecirSup.html", prediccion=prediccion)
+
+@app.route("/Supermercado/Dataset/")
+def menudat():
+    return render_template("MenuDataset.html")
+
+@app.route('/Supermercado/Dataset/Modelo', methods=['GET', 'POST'])
+def datasetm_ncc():
+    # Obtener el inicio y fin del dataset desde el archivo pickle
+    inicio_html, fin_html = obtener_dataset_pickle()
+
+    if request.method == 'POST':
+        if 'csv' in request.form:
+            csv_file = descargar_csv_pickle()
+            return send_file(
+                csv_file,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='dataset_entrenamiento.csv'
+            )
+        elif 'excel' in request.form:
+            excel_file = descargar_excel_pickle()
+            return send_file(
+                excel_file,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name='dataset_entrenamiento.xlsx'
+            )
+
+    return render_template('DsNccM.html', inicio_html=inicio_html, fin_html=fin_html)
+
+@app.route('/Supermercado/Dataset/Nuevo', methods=['GET', 'POST'])
+def datasetn_ncc():
+    dataset_html = obtener_dataset_picklen()
+
+    if request.method == 'POST':
+        if 'csv' in request.form:
+            csv_file = descargar_csv_picklen()
+            return send_file(
+                csv_file,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='dataset_nuevo.csv'
+            )
+        elif 'excel' in request.form:
+            excel_file = descargar_excel_picklen()
+            return send_file(
+                excel_file,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name='dataset_nuevo.xlsx'
+            )
+
+    return render_template('DsNccN.html', dataset_html=dataset_html)
+
+
+@app.route('/Supermercado/Resultados')
+def resultados():
+    accuracy, precision, recall = obtener_metricass()
+    matriz_confusion = obtener_matriz_confusion_base64()
+
+    return render_template('ResultadosSup.html',
+                           accuracyy=accuracy,
+                           precisionn=precision,
+                           recalll=recall,
+                           matriz_confusion=matriz_confusion)
