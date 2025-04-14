@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de Categoría de Cliente</title>
+</head>
+<body>
+    <h1>Predicción de Categoría de Cliente</h1>
+
+    <form method="post">
+        <label for="frecuencia_visita">Frecuencia de Visita (veces al mes):</label>
+        <input type="number" name="frecuencia_visita" step="1" min="0" required><br><br>
+
+        <label for="monto_gasto">Monto de Gasto (COP):</label>
+        <input type="number" name="monto_gasto" step="1000" min="0" required><br><br>
+
+        <label for="categoria_compra">Categoría de Compra:</label>
+        <select name="categoria_compra" required>
+            <option value="" disabled selected>Seleccione una categoría</option>
+            <option value="Tecnologia">Tecnología</option>
+            <option value="Alimentos">Alimentos</option>
+            <option value="Aseo">Aseo</option>
+            <option value="Ropa">Ropa</option>
+            <option value="Mascotas">Mascotas</option>
+        </select><br><br>
+
+        <input type="submit" value="Predecir Categoría">
+    </form>
+
+    {% if prediccion %}
+        <h2>Resultado de la Predicción:</h2>
+        <p>El cliente ha sido clasificado como: <strong>{{ prediccion }}</strong></p>
+    {% endif %}
+</body>
+</html>

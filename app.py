@@ -3,6 +3,7 @@ import sqlite3
 import LineaRegresiones
 import PyRegresion
 import PyLogistica
+from Pyncc import predecir_cliente, guardar_datos_prediccion
 from poblar_db import obtener_modelo_por_id, obtener_modelos, obtener_modelos_detalle
 from PyLogistica import obtener_matriz_confusion, obtener_metricas
 
@@ -97,6 +98,7 @@ def mostrar_resultados():
     accuracy, precision, recall = obtener_metricas()
     return render_template('ResultadosLogistica.html', matriz_confusion=matriz_confusion, accuracy=accuracy, precision=precision, recall=recall)
 
+#SEMANA 7
 @app.route("/modelo/")
 def index():
     modelos = obtener_modelos()
@@ -108,3 +110,23 @@ def modelo(modelo_id):
     modelos = obtener_modelos()  
     modelo = obtener_modelo_por_id(modelo_id)
     return render_template("modelo.html", modelo=modelo, modelos=modelos)
+
+#SEMANA 8
+@app.route("/Supermercado/")
+def menusup():
+    return render_template("MenuNavegacionNcc.html")
+
+@app.route("/Supermercado/Predecir", methods=["GET", "POST"])
+def supermerpredecir():
+    prediccion = None
+    if request.method == "POST":
+        frecuencia_visita = float(request.form["frecuencia_visita"])
+        monto_gasto = float(request.form["monto_gasto"])
+        categoria_compra = request.form["categoria_compra"]
+        
+        # Llamar a la función para obtener la predicción
+        prediccion = predecir_cliente(frecuencia_visita, monto_gasto, categoria_compra)
+
+        guardar_datos_prediccion(frecuencia_visita, monto_gasto, categoria_compra, prediccion)
+    
+    return render_template("PredecirSup.html", prediccion=prediccion)
