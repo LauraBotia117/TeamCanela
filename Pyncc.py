@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pickle
 from io import BytesIO
 import io
+import base64
 from sklearn.neighbors import NearestCentroid
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -59,11 +60,15 @@ modelo.fit(X_train, y_train)
 # Hacer predicciones sobre los datos de prueba
 y_pred = modelo.predict(X_test)
 
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, average='macro')
-recall = recall_score(y_test, y_pred, average='macro')
-conf_matrix = confusion_matrix(y_test, y_pred)
+def obtener_metricass():
+    y_pred = modelo.predict(X_test)
 
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average='macro')
+    recall = recall_score(y_test, y_pred, average='macro')
+    conf_matrix = confusion_matrix(y_test, y_pred)
+
+    return accuracy, precision, recall
 
 # Guardar el modelo y el escalador
 with open('modelo_entrenado.pkl', 'rb') as f:
@@ -90,13 +95,9 @@ def predecir_cliente(frecuencia_visita, monto_gasto, categoria_compra):
     
     # Asignar la clase (esto no es necesario para predecir, pero si lo quieres para registrar el real + predicho, está bien)
     nuevos_datos['categoria_cliente'] = nuevos_datos.apply(asignar_clase, axis=1)
-
     # Preprocesar los datos
     X_nuevo = nuevos_datos[['frecuencia_visita', 'monto_gasto']]
-
-
     X_nuevo_scaled = scaler.transform(X_nuevo)
-
 
     # Hacer la predicción
     prediccion = modelo.predict(X_nuevo_scaled)
@@ -179,3 +180,39 @@ def descargar_excel_picklen():
 
     output.seek(0)
     return output
+
+def obtener_matriz_confusion_base64():
+    # Obtener las predicciones
+    y_pred = modelo.predict(X_test)
+
+    # Generar la matriz de confusión
+    cm = confusion_matrix(y_test, y_pred)
+    etiquetas = np.unique(y_test)
+
+    # Crear la figura
+    fig, ax = plt.subplots(figsize=(6, 4))
+    cax = ax.matshow(cm, cmap='Blues')
+    fig.colorbar(cax)
+
+    # Etiquetas en los ejes
+    ax.set_xticks(range(len(etiquetas)))
+    ax.set_yticks(range(len(etiquetas)))
+    ax.set_xticklabels(etiquetas, rotation=45, ha='left')
+    ax.set_yticklabels(etiquetas)
+    ax.set_xlabel('Predicción')
+    ax.set_ylabel('Real')
+
+    # Mostrar valores dentro de la matriz
+    for i in range(len(etiquetas)):
+        for j in range(len(etiquetas)):
+            ax.text(j, i, cm[i, j], va='center', ha='center', color='black')
+
+    # Guardar imagen en memoria y convertir a base64
+    buffer = BytesIO()
+    plt.tight_layout()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig)
+
+    return img_base64

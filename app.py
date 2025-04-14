@@ -3,7 +3,7 @@ import sqlite3
 import LineaRegresiones
 import PyRegresion
 import PyLogistica
-from Pyncc import predecir_cliente, guardar_datos_prediccion, obtener_dataset_pickle, descargar_csv_pickle, descargar_excel_pickle, obtener_dataset_picklen, descargar_csv_picklen, descargar_excel_picklen
+from Pyncc import predecir_cliente, guardar_datos_prediccion, obtener_dataset_pickle, descargar_csv_pickle, descargar_excel_pickle, obtener_dataset_picklen, descargar_csv_picklen, descargar_excel_picklen, obtener_metricass, obtener_matriz_confusion_base64
 from poblar_db import obtener_modelo_por_id, obtener_modelos, obtener_modelos_detalle
 from PyLogistica import obtener_matriz_confusion, obtener_metricas
 
@@ -183,3 +183,15 @@ def datasetn_ncc():
             )
 
     return render_template('DsNccN.html', dataset_html=dataset_html)
+
+
+@app.route('/Supermercado/Resultados')
+def resultados():
+    accuracy, precision, recall = obtener_metricass()
+    matriz_confusion = obtener_matriz_confusion_base64()
+
+    return render_template('ResultadosSup.html',
+                           accuracyy=accuracy,
+                           precisionn=precision,
+                           recalll=recall,
+                           matriz_confusion=matriz_confusion)
