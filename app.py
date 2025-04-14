@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import sqlite3
 import LineaRegresiones
 import PyRegresion
 import PyLogistica
-from Pyncc import predecir_cliente, guardar_datos_prediccion
+from Pyncc import predecir_cliente, guardar_datos_prediccion, obtener_dataset_pickle, descargar_csv_pickle, descargar_excel_pickle, obtener_dataset_picklen, descargar_csv_picklen, descargar_excel_picklen
 from poblar_db import obtener_modelo_por_id, obtener_modelos, obtener_modelos_detalle
 from PyLogistica import obtener_matriz_confusion, obtener_metricas
 
@@ -130,3 +130,56 @@ def supermerpredecir():
         guardar_datos_prediccion(frecuencia_visita, monto_gasto, categoria_compra, prediccion)
     
     return render_template("PredecirSup.html", prediccion=prediccion)
+
+@app.route("/Supermercado/Dataset/")
+def menudat():
+    return render_template("MenuDataset.html")
+
+@app.route('/Supermercado/Dataset/Modelo', methods=['GET', 'POST'])
+def datasetm_ncc():
+    # Obtener el inicio y fin del dataset desde el archivo pickle
+    inicio_html, fin_html = obtener_dataset_pickle()
+
+    if request.method == 'POST':
+        if 'csv' in request.form:
+            csv_file = descargar_csv_pickle()
+            return send_file(
+                csv_file,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='dataset_entrenamiento.csv'
+            )
+        elif 'excel' in request.form:
+            excel_file = descargar_excel_pickle()
+            return send_file(
+                excel_file,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name='dataset_entrenamiento.xlsx'
+            )
+
+    return render_template('DsNccM.html', inicio_html=inicio_html, fin_html=fin_html)
+
+@app.route('/Supermercado/Dataset/Nuevo', methods=['GET', 'POST'])
+def datasetn_ncc():
+    dataset_html = obtener_dataset_picklen()
+
+    if request.method == 'POST':
+        if 'csv' in request.form:
+            csv_file = descargar_csv_picklen()
+            return send_file(
+                csv_file,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='dataset_nuevo.csv'
+            )
+        elif 'excel' in request.form:
+            excel_file = descargar_excel_picklen()
+            return send_file(
+                excel_file,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name='dataset_nuevo.xlsx'
+            )
+
+    return render_template('DsNccN.html', dataset_html=dataset_html)

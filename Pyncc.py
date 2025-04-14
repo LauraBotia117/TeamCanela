@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
+from io import BytesIO
+import io
 from sklearn.neighbors import NearestCentroid
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -9,6 +11,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, confu
 
 datac = pd.read_csv('C:/Users/dnnru/Downloads/dataset_compras_supermercado.csv', sep=';', encoding='latin1')
 datac.columns = datac.columns.str.strip()
+
+datan = pd.read_csv('C:/Users/dnnru/Downloads/nuevos_clientes.csv', sep=',', encoding='latin1')
+datan.columns = datan.columns.str.strip()
+
 # datae = pd.read_excel('C:/Users/dnnru/Downloads/dataset_compras_supermercado.xlsx')
 # print(datac.head())
 
@@ -60,11 +66,19 @@ conf_matrix = confusion_matrix(y_test, y_pred)
 
 
 # Guardar el modelo y el escalador
-with open('modelo_entrenado.pkl', 'wb') as f:
-    pickle.dump(modelo, f)
+with open('modelo_entrenado.pkl', 'rb') as f:
+    modelo = pickle.load(f)
 
-with open('escalador.pkl', 'wb') as f:
-    pickle.dump(scaler, f)
+with open('escalador.pkl', 'rb') as f:
+    scaler = pickle.load(f)
+
+# Guardar Dataset Entrenamiento
+with open('dataset_entrenamiento.pkl', 'wb') as f:
+    pickle.dump(datac, f)
+
+# Guardar Dataset Nuevos
+with open('dataset_nuevo.pkl', 'wb') as f:
+    pickle.dump(datan, f)
 
 def predecir_cliente(frecuencia_visita, monto_gasto, categoria_compra):
     # Crear el DataFrame para los nuevos datos
@@ -74,19 +88,23 @@ def predecir_cliente(frecuencia_visita, monto_gasto, categoria_compra):
         'categoria_compra': [categoria_compra]
     })
     
-    # Asignar la clase
+    # Asignar la clase (esto no es necesario para predecir, pero si lo quieres para registrar el real + predicho, está bien)
     nuevos_datos['categoria_cliente'] = nuevos_datos.apply(asignar_clase, axis=1)
-    
+
     # Preprocesar los datos
     X_nuevo = nuevos_datos[['frecuencia_visita', 'monto_gasto']]
-    scaler = StandardScaler()
-    X_nuevo_scaled = scaler.fit_transform(X_nuevo)
-    
+
+
+    X_nuevo_scaled = scaler.transform(X_nuevo)
+
+
     # Hacer la predicción
     prediccion = modelo.predict(X_nuevo_scaled)
-    
+
     # Devolver la predicción
     return prediccion[0]
+
+
 
 def guardar_datos_prediccion(frecuencia_visita, monto_gasto, categoria_compra, resultado):
     # Crear un nuevo DataFrame para los nuevos datos
@@ -99,3 +117,65 @@ def guardar_datos_prediccion(frecuencia_visita, monto_gasto, categoria_compra, r
     
     # Guardar los datos en un archivo CSV
     nuevos_datos.to_csv('C:/Users/dnnru/Downloads/nuevos_clientes.csv', mode='a', header=False, index=False)
+
+def obtener_dataset_pickle():
+    with open('dataset_entrenamiento.pkl', 'rb') as f:
+        df = pickle.load(f)
+    return df.head().to_html(classes='table table-striped', index=False), df.tail().to_html(classes='table table-striped', index=False)
+
+def descargar_csv_pickle():
+    with open('dataset_entrenamiento.pkl', 'rb') as f:
+        df = pickle.load(f)
+
+    output = io.StringIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+
+    # Retorna un archivo en memoria listo para ser enviado
+    return io.BytesIO(output.getvalue().encode())
+
+def descargar_excel_pickle():
+    with open('dataset_entrenamiento.pkl', 'rb') as f:
+        df = pickle.load(f)
+
+    # Crear un archivo Excel en memoria usando openpyxl
+    output = io.BytesIO()
+
+    # Usar pandas con openpyxl como motor
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Datos')
+
+    output.seek(0)
+    return output
+
+
+def obtener_dataset_picklen():
+    with open('dataset_nuevo.pkl', 'rb') as f:
+        df = pickle.load(f)
+    # Mostrar la tabla completa (sin cabeza ni cola)
+    return df.to_html(classes='table table-striped', index=False)
+
+def descargar_csv_picklen():
+    with open('dataset_nuevo.pkl', 'rb') as f:
+        df = pickle.load(f)
+
+    output = io.StringIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+
+    # Retorna un archivo CSV completo en memoria listo para ser enviado
+    return io.BytesIO(output.getvalue().encode())
+
+def descargar_excel_picklen():
+    with open('dataset_nuevo.pkl', 'rb') as f:
+        df = pickle.load(f)
+
+    # Crear un archivo Excel en memoria usando openpyxl
+    output = io.BytesIO()
+
+    # Usar pandas con openpyxl como motor
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Datos')
+
+    output.seek(0)
+    return output
